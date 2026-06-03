@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "Totem X",
+  "version": "1.0.0",
+  "description": "Tokoku Itemku quality-of-life improvements.",
+  "icons": {
+    "128": "tokoku.png"
+  },
+  "action": {
+    "default_icon": "tokoku.png",
+    "default_title": "Open Itemku Templates"
+  },
+  "permissions": [
+    "contextMenus",
+    "storage",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://tokoku.itemku.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://tokoku.itemku.com/*"],
+      "js": ["content.js"],
+      "css": ["styles.css"]
+    }
+  ]
+}
