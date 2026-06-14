@@ -1,4 +1,7 @@
 const selector = ".flex.space-x-3.w-full";
+const PIN_DIALOG_SELECTOR = '.MuiDialog-paper';
+const PIN_INPUT_SELECTOR = '.pincode-input-text';
+const INACTIVITY_TEXT = 'Tidak ada aktifitas dalam 30 menit terakhir.';
 
 function getStoreUrl(container) {
   const nameEl = container.querySelector('p.line-clamp-1');
@@ -26,7 +29,31 @@ function applyButton() {
   }
 }
 
-applyButton();
+function fillPin() {
+  const dialog = document.querySelector(PIN_DIALOG_SELECTOR);
+  if (!dialog) return;
 
-const observer = new MutationObserver(() => applyButton());
+  const hasInactivityText = dialog.textContent.includes(INACTIVITY_TEXT);
+  if (!hasInactivityText) return;
+
+  const inputs = dialog.querySelectorAll(PIN_INPUT_SELECTOR);
+  if (inputs.length === 0) return;
+
+  for (const input of inputs) {
+    const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+      window.HTMLInputElement.prototype, 'value'
+    ).set;
+    nativeInputValueSetter.call(input, '0');
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+}
+
+applyButton();
+fillPin();
+
+const observer = new MutationObserver(() => {
+  applyButton();
+  fillPin();
+});
 observer.observe(document.body, { childList: true, subtree: true });
